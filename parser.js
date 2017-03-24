@@ -97,20 +97,24 @@ $(document).ready(function () {
                 num += content[i];
                 i++;
             }
-            while (content.indexOf('Passager', i) !== -1){
+            var billet_type = '';
+            var passenger = [];
+            var age = '';
+            while (content.indexOf('passager', i) !== -1){
                 i = content.indexOf('<br>', i);
                 i = content.indexOf('(', i);
-                var passenger = '';
                 while (content[i] !== '<'){
-                    passenger += content[i];
+                    age += content[i];
                     i++;
                 }
                 i = content.indexOf('train.', i) + 6;
-                var billet_type = '';
                 while (i !== content.indexOf('ble', i)){
                     billet_type += content[i];
                     i++;
                 }
+                passenger.push({age: age, type: billet_type});
+                age = '';
+                billet_type = '';
             }
             trips.push({
                 date: fulldate,
@@ -120,10 +124,9 @@ $(document).ready(function () {
                     departureStation: place_start,
                     type: train,
                     number: num,
-                    passenger: {
-                        age: passenger,
-                        type: billet_type
-                    }
+                    passenger:
+                        passenger
+
                 }
             });
         }
