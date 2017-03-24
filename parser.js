@@ -97,6 +97,24 @@ $(document).ready(function () {
                 num += content[i];
                 i++;
             }
+            i = content.indexOf('<td', i);
+            i = content.indexOf('>', i) + 1;
+            i = content.indexOf('<td', i);
+            i = content.indexOf('>', i) + 1;
+            i = content.indexOf('<td', i);
+            i = content.indexOf('>', i) + 1;
+            var arrival = '';
+            while (content[i] !== '<'){
+                arrival += content[i];
+                i++;
+            }
+            i = content.indexOf('<td', i);
+            i = content.indexOf('>', i) + 1;
+            var arrival_place = '';
+            while (content[i] !== '<'){
+                arrival_place += content[i];
+                i++;
+            }
             var billet_type = '';
             var passenger = [];
             var age = '';
@@ -112,18 +130,22 @@ $(document).ready(function () {
                     billet_type += content[i];
                     i++;
                 }
-                passenger.push({age: age, type: billet_type});
+                if (billet_type.indexOf('Billet') === 1 && age.length > 5){
+                    passenger.push({age: age.trim(), type: billet_type.trim()});
+                }
                 age = '';
                 billet_type = '';
             }
             trips.push({
-                date: fulldate,
-                type: type,
+                type: type.trim(),
+                date: fulldate.trim(),
                 trains: {
-                    departureTime: start,
-                    departureStation: place_start,
-                    type: train,
-                    number: num,
+                    departureTime: start.trim(),
+                    departureStation: place_start.trim(),
+                    arrivalTime: arrival.trim(),
+                    arrivalStation: arrival_place.trim(),
+                    type: train.trim(),
+                    number: num.trim(),
                     passenger:
                         passenger
 
@@ -131,10 +153,18 @@ $(document).ready(function () {
             });
         }
         console.log(trips);
-        //status
         if (mail.html.length){
             json.status = 'OK';
+            json.result = {};
+            json.result.trips = {};
+            json.result.trips.code = 'UNKNOWN';
+            json.result.trips.name = name;
+            json.result.trips.details = {};
+            json.result.trips.details.price = price;
+            json.result.trips.details.roundtrips = trips;
         }
+        //status
+        $('body').html('<pre>'+JSON.stringify(json)+'</pre>');
         console.log(content);
     });
 });
