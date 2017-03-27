@@ -8,8 +8,12 @@ $(document).ready(function () {
     var name = '';
     var date = [];
 
+    // loading the mail into html ot work on it
     mail.load("test.html", function () {
         content = mail.html();
+
+        //modifications for console lisibility
+
         content = content.replace(/\\n+/g, '');
         content = content.replace(/\\r+/g, '');
         pos = content.substr(content.indexOf('<meta'), content.indexOf('>'));
@@ -37,6 +41,7 @@ $(document).ready(function () {
             price += content[i];
             i++;
         }
+        //Find date
         var day;
         i = 0;
         var pos;
@@ -54,6 +59,7 @@ $(document).ready(function () {
             }
             i++;
         }
+        // Loop to get most informations from all trips
         var trips = [];
         for (var c = 0; c < date.length; c++){
             i = content.indexOf(date[c].day, date[c].pos);
@@ -152,12 +158,11 @@ $(document).ready(function () {
                 }
             });
         }
-        console.log(trips);
         if (mail.html.length){
             json.status = 'OK';
             json.result = {};
             json.result.trips = {};
-            json.result.trips.code = 'UNKNOWN';
+            json.result.trips.code = 'UNKNOWN'; // Don't know where to find that
             json.result.trips.name = name;
             json.result.trips.details = {};
             json.result.trips.details.price = price;
@@ -165,6 +170,5 @@ $(document).ready(function () {
         }
         //status
         $('body').html('<pre>'+JSON.stringify(json)+'</pre>');
-        console.log(content);
     });
 });
